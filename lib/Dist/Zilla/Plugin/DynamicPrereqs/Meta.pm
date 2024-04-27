@@ -122,11 +122,11 @@ sub register_prereqs($self) {
 
 =head1 SYNOPSIS
 
-[DynamicPrereqs::Meta]
-condition = is_os linux
-condition = not has_perl 5.036
-joiner = and
-prereq = Foo::Bar 1.2
+ [DynamicPrereqs::Meta]
+ condition = is_os linux
+ condition = not has_perl 5.036
+ joiner = and
+ prereq = Foo::Bar 1.2
 
 =head1 DESCRIPTION
 
