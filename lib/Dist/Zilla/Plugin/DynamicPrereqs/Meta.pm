@@ -23,7 +23,7 @@ sub mvp_multivalue_args {
 sub mvp_aliases {
 	return {
 		condition => 'conditions',
-		prereq => 'input_prereq',
+		prereq => 'prereqs',
 	};
 }
 

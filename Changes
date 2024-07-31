@@ -1,6 +1,7 @@
 Revision history for Dist-Zilla-Plugin-DynamicPrereqs-Meta
 
 {{$NEXT}}
+          - Fix usage of singular "prereq" argument
 
 0.002     2024-04-27 18:31:08+02:00 Europe/Brussels
           - Fix formatting of synopsis
