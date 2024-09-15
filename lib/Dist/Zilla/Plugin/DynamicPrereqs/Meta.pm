@@ -130,4 +130,4 @@ sub register_prereqs($self) {
 
 =head1 DESCRIPTION
 
-This module adds L<dynamic prerequisites|CPAN::Requires::Dynamic> to the metafile of a dist.
+This module adds L<dynamic prerequisites|CPAN::Requirements::Dynamic> to the metafile of a dist.
