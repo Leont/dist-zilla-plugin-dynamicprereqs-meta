@@ -102,6 +102,8 @@ sub metadata {
 	}
 
 	return {
+		dynamic_config    => 1,
+		x_static_install  => 0,
 		x_dynamic_prereqs => {
 			version     => 1,
 			expressions => [
