@@ -1,126 +1,12 @@
 package Dist::Zilla::Plugin::DynamicPrereqs::Meta;
 
-use 5.020;
-
 use Moose;
 
-with 'Dist::Zilla::Role::MetaProvider', 'Dist::Zilla::Role::PrereqSource';
-
-use experimental 'signatures', 'postderef';
-
-use Carp 'croak';
-use Cpanel::JSON::XS;
-use Dist::Zilla::File::InMemory;
-use MooseX::Types::Moose qw/ArrayRef Str/;
-use Text::ParseWords 'shellwords';
-
-my $coder = Cpanel::JSON::XS->new->pretty;
-
-sub mvp_multivalue_args {
-	return qw/conditions prereqs/;
-}
-
-sub mvp_aliases {
-	return {
-		condition => 'conditions',
-		prereq => 'prereqs',
-	};
-}
-
-has filename => (
-	is      => 'ro',
-	isa     => Str,
-	default => 'dynamic-prereqs.json',
-);
-
-has joiner => (
-	is      => 'ro',
-	isa     => Str,
-	default => 'and',
-);
-
-has input_conditions => (
-	init_arg => 'conditions',
-	required => 1,
-	isa      => ArrayRef[Str],
-	traits   => ['Array'],
-	handles  => {
-		input_conditions => 'elements',
-	},
-);
-
-sub condition($self) {
-	my @conditions = map { [ shellwords($_) ] } $self->input_conditions;
-	return @conditions == 1 ? $conditions[0] : [ $self->joiner, @conditions ];
-}
-
-has input_prereqs => (
-	init_arg => 'prereqs',
-	traits   => ['Array'],
-	isa      => ArrayRef,
-	handles  => {
-		input_prereqs => 'elements',
-	},
-);
-
-sub prereqs($self) {
-	my %result;
-	for my $line ($self->input_prereqs) {
-		my ($module, $version) = split ' ', $line, 2;
-		$version //= 0;
-		$result{$module} = $version;
-	}
-	return \%result;
-}
-
-has error => (
-	is  => 'ro',
-	isa => Str,
-);
-
-has phase => (
-	is      => 'ro',
-	isa     => Str,
-	default => 'runtime',
-);
-
-has relationship => (
-	is      => 'ro',
-	isa     => Str,
-	default => 'requires',
-);
-
-sub metadata {
-	my ($self) = @_;
-	my %entry = ( condition => $self->condition );
-	$entry{phase} = $self->phase if $self->phase ne 'runtime';
-	$entry{relationship} = $self->relationship if $self->relationship ne 'requires';
-	if ($self->error) {
-		$entry{error} = $self->error;
-	} else {
-		$entry{prereqs} = $self->prereqs;
-	}
-
-	return {
-		dynamic_config    => 1,
-		x_static_install  => 0,
-		x_dynamic_prereqs => {
-			version     => 1,
-			expressions => [
-				\%entry
-			],
-		},
-	};
-}
-
-sub register_prereqs($self) {
-	$self->zilla->register_prereqs({ phase => 'configure' }, 'CPAN::Requirements::Dynamic' => 0);
-	return;
-}
+with 'Dist::Zilla::Role::DynamicPrereqs::Meta';
 
 1;
 
-# ABSTRACT: Add dynamic prereqs to to the metadata in our Dist::Zilla build
+# ABSTRACT: Add dynamic prereqs to the metadata
 
 =head1 SYNOPSIS
 
@@ -132,4 +18,18 @@ sub register_prereqs($self) {
 
 =head1 DESCRIPTION
 
-This module adds L<dynamic prerequisites|CPAN::Requirements::Dynamic> to the metafile of a dist.
+This plugin is adds dynamic prereqs to the metadata. Note that for most uses it's recommended to use the various plugins for your install tool, that will enable support for dynamic prereqs metadata for that tool. So far the following have been implemented.
+
+=over 4
+
+=item * L<Dist::Zilla::Plugin::ModuleBuildTiny::DynamicPrereqs>
+
+This will add all the necessary prereqs to enable dynamic prerequisites in L<Module::Build::Tiny>.
+
+=item * L<Dist::Zilla::Plugin::DistBuild::DynamicPrereqs>
+
+This will add everything needed to enable dynamic prerequisites in L<Dist::Build>.
+
+=back
+
+More plugins are planned for the future.
