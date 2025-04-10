@@ -1,8 +1,11 @@
 package Dist::Zilla::Plugin::DynamicPrereqs::Meta;
 
 use Moose;
+use namespace::autoclean;
 
 with 'Dist::Zilla::Role::DynamicPrereqs::Meta';
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 

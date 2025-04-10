@@ -3,6 +3,7 @@ package Dist::Zilla::Plugin::DynamicPrereqs::DistBuild;
 use 5.020;
 use Moose;
 use experimental qw/signatures/;
+use namespace::autoclean;
 
 with 'Dist::Zilla::Role::PrereqSource', 'Dist::Zilla::Role::FileGatherer', 'Dist::Zilla::Role::DynamicPrereqs::Meta';
 
@@ -27,6 +28,8 @@ sub gather_files($self) {
 
 	return;
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 

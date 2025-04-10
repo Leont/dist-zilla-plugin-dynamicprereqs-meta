@@ -3,6 +3,7 @@ package Dist::Zilla::Plugin::DynamicPrereqs::ModuleBuildTiny;
 use 5.020;
 use Moose;
 use experimental qw/signatures/;
+use namespace::autoclean;
 
 with 'Dist::Zilla::Role::PrereqSource', 'Dist::Zilla::Role::DynamicPrereqs::Meta';
 
@@ -11,6 +12,8 @@ sub register_prereqs($self) {
 	$self->zilla->register_prereqs({ phase => 'configure' }, 'CPAN::Requirements::Dynamic' => '0.002');
 	return;
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 
