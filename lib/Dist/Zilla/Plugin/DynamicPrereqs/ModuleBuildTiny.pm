@@ -28,3 +28,27 @@ sub register_prereqs($self) {
 =head1 DESCRIPTION
 
 This module adds L<dynamic prerequisites|CPAN::Requirements::Dynamic> to the metafile of a L<Module::Build::Tiny> using dist.
+
+=attr conditions
+
+One or more conditions, as defined by L<CPAN::Requirements::Dynamic>.
+
+=attr joiner
+
+The operator that is used when more than one condition is given. This must be either C<and> or C<or>.
+
+=attr prereqs
+
+One or more prerequisites that will be added to the requirements if the condition passes.
+
+=attr phase
+
+The phase of the prerequisites, this defaults to C<'runtime'>.
+
+=attr relation
+
+The relationship of the prerequisites, this defaults to C<'requires'>.
+
+=attr error
+
+Instead of prerequisites being added, an error will be outputted if the condition matches.
