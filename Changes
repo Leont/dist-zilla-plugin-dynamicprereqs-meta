@@ -1,6 +1,7 @@
 Revision history for Dist-Zilla-Plugin-DynamicPrereqs-Meta
 
 {{$NEXT}}
+          - Allow empty conditions
 
 0.005     2025-04-10 17:19:00+02:00 Europe/Brussels
           - Add [DynamicPrereqs::ModuleBuildTiny] and [DynamicPrereqs::DistBuild]

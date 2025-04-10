@@ -70,32 +70,36 @@ has relationship => (
 );
 
 sub metadata($self) {
-	my @conditions = map { [ shellwords($_) ] } $self->input_conditions;
-	my $condition = @conditions == 1 ? $conditions[0] : [ $self->joiner, @conditions ];
-	my %entry = ( condition => $condition );
-	$entry{phase} = $self->phase if $self->phase ne 'runtime';
-	$entry{relationship} = $self->relationship if $self->relationship ne 'requires';
-	if ($self->error) {
-		$entry{error} = $self->error;
-	} else {
-		my %result;
-		for my $line ($self->input_prereqs) {
-			my ($module, $version) = split ' ', $line, 2;
-			$result{$module} = $version // 0;
+	if (my @input_conditions = $self->input_conditions) {
+		my @conditions = map { [ shellwords($_) ] } @input_conditions;
+		my $condition = @conditions == 1 ? $conditions[0] : [ $self->joiner, @conditions ];
+		my %entry = ( condition => $condition );
+		$entry{phase} = $self->phase if $self->phase ne 'runtime';
+		$entry{relationship} = $self->relationship if $self->relationship ne 'requires';
+		if ($self->error) {
+			$entry{error} = $self->error;
+		} else {
+			my %result;
+			for my $line ($self->input_prereqs) {
+				my ($module, $version) = split ' ', $line, 2;
+				$result{$module} = $version // 0;
+			}
+			$entry{prereqs} = \%result;
 		}
-		$entry{prereqs} = \%result;
-	}
 
-	return {
-		dynamic_config    => 1,
-		x_static_install  => 0,
-		x_dynamic_prereqs => {
-			version     => 1,
-			expressions => [
-				\%entry
-			],
-		},
-	};
+		return {
+			dynamic_config    => 1,
+			x_static_install  => 0,
+			x_dynamic_prereqs => {
+				version     => 1,
+				expressions => [
+					\%entry
+				],
+			},
+		};
+	} else {
+		return {};
+	}
 }
 
 1;
