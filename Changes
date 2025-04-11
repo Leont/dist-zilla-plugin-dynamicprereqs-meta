@@ -1,6 +1,8 @@
 Revision history for Dist-Zilla-Plugin-DynamicPrereqs-Meta
 
 {{$NEXT}}
+
+0.006     2025-04-11 23:28:06+02:00 Europe/Brussels
           - Add [DynamicPrereqs::ModuleBuild] plugin
           - Allow empty conditions
           - Actually add the necessary planner file in [DynamicPrereqs::DistBuild]
